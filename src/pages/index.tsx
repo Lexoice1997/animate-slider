@@ -1,115 +1,112 @@
-import Image from "next/image";
-import localFont from "next/font/local";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image"
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const content = [
+  {
+    title: "Архитектурное проектирование",
+    description:
+      "Предлагаем услуги по архитектурному проектированию частных объектов, \n" +
+      "также доработку существующих фасадов \n" +
+      "и строений с целью улучшить их внешний вид и характеристики. Индивидуальный подход и внимательное отношение \n" +
+      "к пожеланиям клиента – залог нашей успешной работы.",
+  },
+  {
+    title: "Дизайн интерьера\n",
+    description:
+      "Дизайн интерьера  отражает вкус, \n" +
+      "статус и внутренний мир  его обитателя. \n" +
+      "Мы реализуем  проекты для частных \n" +
+      "и общественных заведений любой сложности и стиля . ",
+  },
+  {
+    title: "Комплектация проектов",
+    description:
+      "В выставочном зале при нашем дизайн-бюро можно посмотреть некоторые образцы мебели от лучших европейских производителей, выбрать по каталогам товары более 400 производителей мебели, сантехники, светильников, отделочных материалов, мозаики, аксессуаров и текстиля. ",
+  },
+];
 
 export default function Home() {
+  const firstItemRef = useRef<HTMLDivElement>(null);
+  const secondItemRef = useRef<HTMLDivElement>(null);
+  const thirdItemRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  const handleNextBtn = () => {
+    const firstElement = firstItemRef.current;
+    const secondElement = secondItemRef.current;
+    const thirdElement = thirdItemRef.current;
+
+    if (firstElement && secondElement && thirdElement) {
+      if (firstElement.classList.contains("first-item")) {
+        firstElement.classList.replace("first-item", "third-item");
+        secondElement.classList.replace("second-item", "first-item");
+        thirdElement.classList.replace("third-item", "second-item");
+      } else if (firstElement.classList.contains("second-item")) {
+        firstElement.classList.replace("second-item", "first-item");
+        secondElement.classList.replace("third-item", "second-item");
+        thirdElement.classList.replace("first-item", "third-item");
+      } else if (firstElement.classList.contains("third-item")) {
+        firstElement.classList.replace("third-item", "second-item");
+        secondElement.classList.replace("first-item", "third-item");
+        thirdElement.classList.replace("second-item", "first-item");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNextBtn();
+      if (currentIndex === 2) {
+        setCurrentIndex(0);
+      } else {
+        setCurrentIndex((prev) => prev + 1);
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [currentIndex]);
+
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
+      style={{ transformStyle: "preserve-3d" }}
+      className="flex justify-center min-h-[100vh]"
     >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <div
+        style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+        className="relative flex h-full w-full"
+      >
+        <div
+          className="first-item transition-all duration-1000 transform-origin-bottom select-none absolute w-[112px] h-[140px] text-black top-[150px] left-[calc(30%-100px)] z-10"
+          ref={firstItemRef}
+        >
+          <Image src="image-1.png" alt="image-1" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div
+          className="second-item transition-all duration-1000 transform-origin-bottom absolute w-[112px] h-[140px] text-black top-[150px] left-[calc(30%-100px)] z-20"
+          ref={secondItemRef}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Image src="image-2.png" alt="image-2" />
+        </div>
+        <div
+          className="third-item transition-all duration-1000 transform-origin-bottom absolute w-[112px] h-[140px] text-black top-[150px] left-[calc(30%-100px)] z-30"
+          ref={thirdItemRef}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <Image src="image-3.png" alt="image-3" />
+        </div>
+        <div className="absolute left-[calc(30%+667px)] top-[150px] w-[340px]">
+          <h2 className="text-center text-black text-[22px] mb-5">
+            {(currentIndex + 1).toString().padStart(2, "0")}
+          </h2>
+          <h3 className="text-[22px] text-title mb-5">
+            {content[currentIndex].title}
+          </h3>
+          <p className="text-base text-description">
+            {content[currentIndex].description}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
